@@ -8,6 +8,9 @@ int Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k1DProjectiveSpacal;
 //   2D azimuthal projective SPACAL (slow)
 // int Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k2DProjectiveSpacal;
 
+bool use_island_algo = true;
+bool use_phenix_algo = false;
+bool use_adjacent_algo = false;
 #include <iostream>
 
 // just a dummy parameter used by the tilted plate geom
@@ -474,8 +477,18 @@ void CEMC_Clusters(int verbosity = 0) {
   gSystem->Load("libfun4all.so");
   gSystem->Load("libg4detectors.so");
   Fun4AllServer *se = Fun4AllServer::instance();
-
-  RawClusterBuilder* ClusterBuilder = new RawClusterBuilder("EmcRawClusterBuilder");
+  
+  if(use_adjacent_algo){
+   RawClusterBuilder* ClusterBuilder = new RawClusterBuilder("EmcRawClusterBuilder");
+  }
+  
+  if(use_phenix_algo){
+  RawClusterBuilderv1* ClusterBuilder = new RawClusterBuilderv1("EmcRawClusterBuilder");
+  }
+  
+  if(use_island_algo){
+  RawClusterBuilderIA* ClusterBuilder = new RawClusterBuilderIA("EmcRawClusterBuilder");
+  }
   ClusterBuilder->Detector("CEMC");
   ClusterBuilder->Verbosity(verbosity);
   se->registerSubsystem( ClusterBuilder );
